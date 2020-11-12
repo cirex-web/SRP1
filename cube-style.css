@@ -1,0 +1,15 @@
+canvas {
+  display: flex;
+/*   border: 10px solid; */
+  margin: auto;
+}
+body {
+  margin: 0px;
+  text-align: center;
+}
+h3 {
+  margin: 10px;
+}
+h1 {
+  margin: 3px;
+}

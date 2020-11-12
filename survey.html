@@ -1,0 +1,84 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>SRP</title>
+
+    <link rel="stylesheet" href="/survey.css" />
+  </head>
+  <body style="text-align:center">
+    <div class="container" id="0">
+      <div style="width:80%;margin: auto">
+        <div class="txt" style="font-size:50px; margin-bottom:20px">
+          You have succesfully joined the experiment
+        </div>
+
+        <div class="txt" style="font-size:20px">
+          If you close this page during the experiment your progress will not be
+          saved. <br />
+          Before starting the puzzle, please answer the following questions.
+        </div>
+
+        <button onclick="move()">
+          Begin!
+        </button>
+      </div>
+    </div>
+    <template id="survey-results">
+      <div class="container" id="NUM">
+        <div style="margin: auto;">
+          12% of particpants have solved the challenge
+        </div>
+      </div>
+    </template>
+    <template id="form">
+      <div class="container" id="NUM">
+        <div style="width:50%;margin: auto;text-align:left">
+          <div
+            class="txt"
+            style="font-size:30px;font-weight: 600; margin-bottom: 20px;"
+            id="question"
+          >
+            QUESTION
+          </div>
+
+          <form style="margin:0px" id="form-NUM"></form>
+          <button id="buttonB-NUM" onclick="back()">Back</button>
+          <button id="buttonN-NUM" onclick="move()">Next</button>
+        </div>
+      </div>
+    </template>
+    <template id="text">
+      <div style="display:flex" id="inner-text">
+        <input type="text" />
+        <div id="text-text"></div>
+      </div>
+    </template>
+    <template id="mc">
+      <div id="mc-choice-container">
+        <input type="radio" />
+        <label></label><br />
+      </div>
+    </template>
+    <div id="loading">
+      <span class="loading_anim"></span>
+      <div style="padding:10px 0px">
+        Loading... Please wait
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" defer></script>
+    <script
+      src="https://kit.fontawesome.com/b35280581b.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/survey.js" defer></script>
+    <script src="/survey-API.js" defer></script>
+    <script
+      defer
+      src="https://apis.google.com/js/api.js"
+      onload="handleClientLoad()"
+    ></script>
+  </body>
+</html>

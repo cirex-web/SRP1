@@ -1,0 +1,126 @@
+body {
+  justify-content: center;
+  display: flex;
+  /* text-align: center; */
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0;
+  overflow: hidden;
+  transition: 1s all;
+/*   opacity: 0; */
+}
+#loading {
+  height: auto;
+  /* justify-content: center; */
+  width: 100%;
+  background: #d3d3d300;
+  /* display: flex; */
+  /* height: 100%; */
+  z-index: 1;
+  text-align: center;
+}
+.loading_anim {
+  height: 100px;
+  width: 100px;
+  display: inline-block;
+  margin: auto;
+  border: solid 4px lightgray;
+  border-left-color: rgba(3, 155, 229, 1);
+  border-top-color: rgba(3, 155, 229, 1);
+  animation: rotate 600ms infinite linear;
+  border-radius: 50%;
+}
+@keyframes rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+button {
+  margin: 30px;
+  width: 200px;
+  height: 50px;
+  font-size: 30px;
+}
+.container {
+/*   transform: translate(100%, 0px); */
+  display:none;
+  transition: 0.5s all;
+  width: 100%;
+  height:100%;
+  position: absolute;
+}
+[id="0"] {
+  transform: none;
+}
+label {
+  font-size: 30px;
+  display: inline-block;
+  width: 80%;
+  padding: 5px 0px 5px 1em;
+}
+/* [type="radio"] {
+  display: none;
+} */
+
+input[type="radio"] {
+  position: absolute;
+  left: 0px;
+  appearance: none;
+  font-size: inherit;
+  width: 2em;
+  margin: 0;
+  color: inherit;
+  outline: none;
+  font-family: "Font Awesome 5 Pro";
+  transition: 300ms ease-out;
+  top: 50%;
+  transform: translate(0px, -50%);
+  height: 100%;
+}
+input[type="radio"]::after {
+  position: absolute;
+  content: "\f111";
+  display: inline-block;
+  text-align: center;
+  margin: auto;
+  /* padding: 10px; */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+input[type="radio"]:checked::after {
+  font-weight: 900;
+}
+input[type="radio"]:active {
+  transform: translate(0px, -50%) scale(0.6);
+}
+
+#mc-choice-container {
+  margin: 8px 0px;
+  position: relative;
+}
+.hidden{
+  display: none;
+}
+button,
+input[type="radio"],
+label {
+  cursor: pointer;
+}
+#mc-choice-container:hover {
+  outline: gray solid 4px;
+}
+#mc-choice-container.selected {
+  outline: black solid 4px;
+}
+
+.container input[type="text"] {
+  font-size: 25px;
+  width: 50px;
+  margin: 30px 0px;
+}
+#text-text {
+  margin: auto 10px;
+  font-size: 30px;
+}

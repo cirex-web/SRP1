@@ -1,4 +1,4 @@
-let slide = 0;
+let slide = 5;
 let moving = false;
 let questionNum;
 let enteredVals = [];
@@ -89,7 +89,8 @@ function addBox(i, suffix) {
 }
 
 function updateButtonState(s = slide, override = false) {
-  if ($("[name=form-choice-" + s + "]:checked").length > 0 || $("#" + "text-" + s + "-input input").val()) {
+  let num = parseInt($("#" + "text-" + s + "-input input").val());
+  if ($("[name=form-choice-" + s + "]:checked").length > 0 || (num>0&&num<=20) ){
     $("#buttonN-" + s).prop("disabled", false);
   } else {
     $("#buttonN-" + s).prop("disabled", true);

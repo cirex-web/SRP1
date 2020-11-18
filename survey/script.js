@@ -9,7 +9,7 @@ async function start() {
   $("#" + slide).css("opacity", 1);
 
   hideLoader();
-  $("#mc-choice-container input").click(async function(ev) {
+  $("#mc-choice-container input").click(async function (ev) {
     updateButtonState();
 
     $("#form-" + slide + " div").removeClass("selected");
@@ -18,23 +18,23 @@ async function start() {
   });
 }
 async function move() {
-  
+
   await transferSlides(1);
-  if(slide==questionNum+1){
-    for(let i = 1; i<=questionNum; i++){
-      let selected = $("[name=form-choice-"+i+"]:checked");
+  if (slide == questionNum + 1) {
+    for (let i = 1; i <= questionNum; i++) {
+      let selected = $("[name=form-choice-" + i + "]:checked");
       let chosenText;
-      if(selected.length){
-        chosenText = ($("[for="+selected[0].id).text());
-      }else{
-        chosenText = ($("#text-"+i+"-input [type=\"text\"]").val());
+      if (selected.length) {
+        chosenText = ($("[for=" + selected[0].id).text());
+      } else {
+        chosenText = ($("#text-" + i + "-input [type=\"text\"]").val());
       }
-      
+
       enteredVals.push(chosenText);
 
     }
-    
-    
+
+
   }
   // if (override||(!moving && maxSlide == slide)) {
   //   transferSlides(1);
@@ -63,10 +63,10 @@ function createEverything(data) {
 
   //console.log(data);
 }
-function createEndSlide(){
+function createEndSlide() {
   let t = document.getElementById("survey-results");
-  let c= t.content.cloneNode(true);
-  c.getElementById("NUM").id = questionNum+1;
+  let c = t.content.cloneNode(true);
+  c.getElementById("NUM").id = questionNum + 1;
   $("body").append(c);
 }
 function addBox(i, suffix) {
@@ -80,7 +80,7 @@ function addBox(i, suffix) {
   $("#" + "text-" + i + "-input input").on("input", ev => {
     updateButtonState(slide);
   });
-  $("#form-" + i).submit(function() {
+  $("#form-" + i).submit(function () {
     if ($("#" + "text-" + i + "-input input").val()) {
       document.querySelector("#ButtonN-" + slide).click();
     }
@@ -90,7 +90,7 @@ function addBox(i, suffix) {
 
 function updateButtonState(s = slide, override = false) {
   let num = parseInt($("#" + "text-" + s + "-input input").val());
-  if ($("[name=form-choice-" + s + "]:checked").length > 0 || (num>0&&num<=20) ){
+  if ($("[name=form-choice-" + s + "]:checked").length > 0 || (num > 0 && num <= 20)) {
     $("#buttonN-" + s).prop("disabled", false);
   } else {
     $("#buttonN-" + s).prop("disabled", true);
@@ -136,6 +136,22 @@ function transferSlides(moveAmount) {
     $("#buttonB-" + slide).prop("disabled", true);
     $("#buttonN-" + slide).prop("disabled", true);
     $("#" + slide).css({ pointerEvents: "none" });
+
+    if (slide + moveAmount == questionNum + 1) {
+      setTimeout(() => {
+        let endSlide = questionNum+1;
+        $("#" + (endSlide)).css("opacity", 0);
+        setTimeout(() => {
+          $("#" + (endSlide)).html("");
+          let temp = document.getElementById("just-text");
+          let clone = temp.content.cloneNode(true);
+          clone.children[0].innerHTML = parseInt(Math.random() * 100) + "% of people have completed the challenge."
+          $("#" + (endSlide)).append(clone);
+          $("#" + (endSlide)).css("opacity", 1);
+        }, 300)
+
+      }, 1000 + Math.random() * 1000);
+    }
 
     moving = true;
     setTimeout(async () => {

@@ -1,4 +1,4 @@
-let slide = 5;
+let slide = 0;
 let moving = false;
 let questionNum;
 let enteredVals = [];

@@ -36,11 +36,23 @@ body {
   }
 }
 
-button {
+button{
   margin: 30px;
   width: 200px;
   height: 50px;
   font-size: 30px;
+  background: #0079D3;
+  color: white;
+  border: none;
+}
+button:disabled{
+  background: #e0f2ff;
+  cursor: default;
+
+}
+button:hover:enabled {
+  background: #7fbce9;
+  cursor: pointer;
 }
 .container {
 /*   transform: translate(100%, 0px); */
@@ -127,4 +139,16 @@ label {
 
 .txt{
   font-size: 30px;
+}
+
+.info{
+  opacity: 0;
+    overflow: hidden;
+    transition: .8s all;
+    width: 70%;
+    text-align: left;
+    margin: auto;
+    padding-top: 30px;
+    font-size: 20px;
+    max-height: 0px;
 }

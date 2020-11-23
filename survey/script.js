@@ -1,13 +1,17 @@
-let slide = 0;
+let slide = 5;
 let moving = false;
 let questionNum;
 let enteredVals = [];
+let debug = true;
 async function start() {
   $("#" + slide).css("display", "flex");
   $("#" + slide).css("opacity", 0);
   await wait(100);
   $("#" + slide).css("opacity", 1);
+  if(debug){
+    move();
 
+  }
   hideLoader();
   $("#mc-choice-container input").click(async function (ev) {
     updateButtonState();
@@ -145,9 +149,17 @@ function transferSlides(moveAmount) {
           $("#" + (endSlide)).html("");
           let temp = document.getElementById("just-text");
           let clone = temp.content.cloneNode(true);
-          clone.children[0].innerHTML = parseInt(Math.random() * 100) + "% of people have completed the challenge."
+          clone.getElementById("stat").innerHTML = parseInt(Math.random() * 100) + "% of partcipants with similar responses have completed solved the challenge."
           $("#" + (endSlide)).append(clone);
           $("#" + (endSlide)).css("opacity", 1);
+
+          setTimeout(()=>{
+            $(".info").css("max-height","200px");
+            setTimeout(()=>{
+              $(".info").css("opacity","1");
+            },500);
+          },500);
+
         }, 300)
 
       }, 1000 + Math.random() * 1000);

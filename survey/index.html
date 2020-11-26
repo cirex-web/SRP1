@@ -62,6 +62,7 @@
     </div>
   </template>
   <template id="just-text">
+
     <div style="margin: auto;">
       <div class="txt" id="stat">
         [TEXT]
@@ -75,11 +76,18 @@
         - and just your mind.<br><br>
 
         Once you begin, you can end the experiment by either succesfully solving the puzzle or by clicking the give-up
-        button.
-
+        button.<br>
       </div>
+      <button id="buttonN-puzzle" onclick="transferSlides(1)" disabled="disabled">Let's go!</button>
+
     </div>
 
+  </template>
+  <template id="puzzle">
+    <div class="container" id="NUM">
+      <iframe class="embed" onload="puzzleLoaded()" src="/cube/index.html" height="100%" width="100%"></iframe>
+
+    </div>
   </template>
   <div id="loading">
     <span class="loading_anim"></span>

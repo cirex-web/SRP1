@@ -1,10 +1,14 @@
 let win = {
-  margin: 2,
+  margin: 0,
   size: 4,
   h: 500,
   w: 500, //includes margin but not padding >:D
   padding: 10,
-  slidingTime: 0.13
+  slidingTime: 0.13,
+  movable:false,
+  startTime:undefined,
+  curTime:undefined,
+  loopID:undefined
 };
 let box = {
   width: 0,
@@ -18,7 +22,7 @@ let held = false;
 let prevBox = undefined;
 let grid = [...Array(win.size)].map(x => []); //TODO figure out what this is
 
-window.onload = () => {
+function start(){
   canvas = document.getElementById("c");
   con = canvas.getContext("2d");
 
@@ -100,7 +104,7 @@ function loop() {
         con.fillStyle = block[0][1];
         //console.log(block[1]);
         con.fillRect(x, y, box.width, box.height);
-        con.strokeRect(x, y, box.width, box.height);
+        // con.strokeRect(x, y, box.width, box.height);
         con.fillStyle = "black";
 
         con.fillText(block[0][0], x + box.width / 2, y + box.height / 2);
@@ -129,10 +133,31 @@ function snapToGrid() {
     }
   }
 }
-function transformGrid(row, column, box) {
+function updateClock(){
+  let dif = parseInt((Date.now() - win.startTime.getTime()) / 1000);
+
+  let sec = "00" + (dif % 60);
+  dif = parseInt(dif / 60);
+  let min = "00" + (dif % 60);
+  dif = parseInt(dif / 60);
+
+  let time = (dif==0?"":dif + ":" )+ min.slice(-2) + ":" + sec.slice(-2);
+  if(win.curTime!=time){
+    win.curTime = time;
+    $("#clock").html(time);
+  }
+}
+function transformGrid(row, column, box, scramble=false) {
+  if(!win.movable)return;
+  if(!win.startTime&&!scramble){
+    win.startTime = new Date();
+    
+    win.loopID = setInterval(updateClock,2);
+  }
   snapToGrid();
   let r = box[0];
   let c = box[1];
+  // console.log(row,column);
   //row and column are the transformations
   //r and c are actual coords
   //console.log(row + " " + column);
@@ -162,11 +187,10 @@ function transformGrid(row, column, box) {
 
         grid[r1][c1][0] = start[0];
       }
-      let edge = win.margin + win.padding;
+      // let edge = win.margin + win.padding;
       if (r1 - r != row || c1 - c != column) {
         grid[r1][c1][1].push(co(c1 - column, r1 - row));
         transition(r1, c1, co(c1, r1), 1);
-        console.log(r1 - r, c1 - c);
         newPos = co(c + column, r + row);
       }
       //console.log("moving " + grid[r1][c1][1][0] + " to " + newPos);
@@ -256,11 +280,21 @@ async function setUp() {
   // }
 }
 //c.fillRect(square.x, square.y, width, width);
-function rand(n){
-  return parseInt(Math.random()*n);
+function rand(n, noZero = false){
+  let re = parseInt(Math.random()*n);
+  if(noZero&&re==1){
+    re++;
+  }
+  return re;
 }
 function wait(m){
   return new Promise((re)=>{
     setTimeout(re,m);
   })
+}
+function scrambleCube(){
+  for(let i = 0; i<100; i++){
+    let num = rand(3)-1;
+    transformGrid(num,num==0?(rand(3,true)-1): 0,[rand(win.size),rand(win.size)],true);
+  }
 }

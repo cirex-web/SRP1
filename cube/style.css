@@ -1,15 +1,38 @@
-canvas {
-  display: flex;
-/*   border: 10px solid; */
-  margin: auto;
-}
 body {
   margin: 0px;
   text-align: center;
 }
+
 h3 {
   margin: 10px;
 }
+
 h1 {
   margin: 3px;
+}
+
+html {
+  height: 100%;
+}
+
+#side-panel {
+  transform: translate(0px, -50%);
+  position: absolute;
+  height: 100%;
+  width: 250px;
+  margin: 0px 20px;
+  /* padding: 10px 30px; */
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 5px solid black;
+}
+#scramble{
+  margin-top: 10px;
+}
+#main-content {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  position: relative;
 }

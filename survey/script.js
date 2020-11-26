@@ -72,6 +72,7 @@ function createEndSlide() {
   let c = t.content.cloneNode(true);
   c.getElementById("NUM").id = questionNum + 1;
   $("body").append(c);
+  
 }
 function addBox(i, suffix) {
   let temp = document.getElementById("text");
@@ -141,26 +142,16 @@ function transferSlides(moveAmount) {
     $("#buttonN-" + slide).prop("disabled", true);
     $("#" + slide).css({ pointerEvents: "none" });
 
-    if (slide + moveAmount == questionNum + 1) {
+    if (slide + moveAmount == questionNum + 1) { // ONE
       setTimeout(() => {
         let endSlide = questionNum+1;
         $("#" + (endSlide)).css("opacity", 0);
-        setTimeout(() => {
-          $("#" + (endSlide)).html("");
-          let temp = document.getElementById("just-text");
-          let clone = temp.content.cloneNode(true);
-          clone.getElementById("stat").innerHTML = parseInt(Math.random() * 100) + "% of partcipants with similar responses have completed solved the challenge."
-          $("#" + (endSlide)).append(clone);
-          $("#" + (endSlide)).css("opacity", 1);
 
-          setTimeout(()=>{
-            $(".info").css("max-height","200px");
-            setTimeout(()=>{
-              $(".info").css("opacity","1");
-            },500);
-          },500);
+        setTimeout(()=>{
+          displayStat(endSlide);
+        },500);
 
-        }, 300)
+
 
       }, 1000 + Math.random() * 1000);
     }
@@ -183,10 +174,43 @@ function transferSlides(moveAmount) {
     }, 300);
   });
 }
+async function displayStat(endSlide){
 
+  $("#" + (endSlide)).html("");
+  let temp = document.getElementById("just-text");
+  let clone = temp.content.cloneNode(true);
+  
+  clone.getElementById("stat").innerHTML = parseInt(Math.random() * 100) + "% of partcipants with similar responses have completed solved the challenge."
+  $("#" + (endSlide)).append(clone);
+  $("#" + (endSlide)).css("opacity", 1);
+
+  setTimeout(()=>{
+    $(".info").css("max-height","250px");
+    $(".info").css("opacity","1");
+
+    startPuzzle();
+    // setTimeout(()=>{
+    //   $(".info").css("opacity","1");
+    // },500);
+  },1500);
+}
+function startPuzzle(){
+  let b = $("body")[0];
+  let clone = $("#puzzle")[0].content.cloneNode(true);
+  b.appendChild(clone);
+  $("#NUM")[0].id = slide+1;
+}
+function puzzleLoaded(){
+  //if it stil broke, start fiddling with it
+  console.log("a");
+  $("#buttonN-puzzle").prop("disabled","");
+
+}
 function back() {
   transferSlides(-1);
 }
 function wait(m) {
   return new Promise(r => setTimeout(r, m));
 }
+//Later
+//TODO: Convert document.whatever to jquery cuz cool

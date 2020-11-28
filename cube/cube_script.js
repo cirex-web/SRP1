@@ -2,13 +2,15 @@ let win = {
   margin: 0,
   size: 4,
   h: 500,
-  w: 500, //includes margin but not padding >:D
+  w: 500, //includes margin but not padding >:D 
   padding: 10,
   slidingTime: 0.13,
   movable:false,
   startTime:undefined,
   curTime:undefined,
-  loopID:undefined
+  timeLimit:1200,
+  loopID:undefined,
+  moves: 0
 };
 let box = {
   width: 0,
@@ -56,7 +58,7 @@ function start(){
       held = false;
     }
   });
-
+  updateClock(win.timeLimit);
   setUp();
 };
 function inBounds(el) {
@@ -133,9 +135,12 @@ function snapToGrid() {
     }
   }
 }
-function updateClock(){
-  let dif = parseInt((Date.now() - win.startTime.getTime()) / 1000);
-
+function getTimeSpent(){
+  return parseInt((Date.now() - win.startTime.getTime()) / 1000);
+}
+function updateClock(dif =(win.timeLimit - getTimeSpent())){
+  
+  let ogDif = dif;
   let sec = "00" + (dif % 60);
   dif = parseInt(dif / 60);
   let min = "00" + (dif % 60);
@@ -144,16 +149,41 @@ function updateClock(){
   let time = (dif==0?"":dif + ":" )+ min.slice(-2) + ":" + sec.slice(-2);
   if(win.curTime!=time){
     win.curTime = time;
-    $("#clock").html(time);
+    if(ogDif<0&&win.movable){
+      endGame(STATES.OUT_OF_TIME);
+    }else{
+      $("#clock").html(time);
+    }
   }
 }
-function transformGrid(row, column, box, scramble=false) {
-  if(!win.movable)return;
-  if(!win.startTime&&!scramble){
-    win.startTime = new Date();
-    
-    win.loopID = setInterval(updateClock,2);
+function checkIfSolved(){
+  for(let r = 0; r< grid.length; r++){
+    for(let c = 0; c < grid.length; c++){
+      if(grid[r][c][0][0]!=r*grid.length+c+1){
+        return false;
+      }
+    }
   }
+  return true;
+}
+async function transformGrid(row, column, box, scramble=false, countAsMove = true) {
+  if(!win.movable)return;
+  if(!scramble){
+    if(countAsMove){ //another fix would be to move this below tramsformGrid
+      win.moves++;
+      $("#moves").html("Moves: "+win.moves);
+  
+    }
+
+    if(!win.startTime){
+      win.startTime = new Date();
+      $("#scramble").prop("disabled","");
+      await wait(10); //there's a weird glitch where startTime is undefined sometimes
+      //start the clock!
+      win.loopID = setInterval(updateClock,2);
+    }
+  }
+
   snapToGrid();
   let r = box[0];
   let c = box[1];
@@ -162,7 +192,7 @@ function transformGrid(row, column, box, scramble=false) {
   //r and c are actual coords
   //console.log(row + " " + column);
   if (row != 0 && column != 0) {
-    transformGrid(row, 0, box);
+    transformGrid(row, 0, box, false);
     transformGrid(0, column, box);
   } else {
     let start = [...grid[r][c]];
@@ -198,6 +228,10 @@ function transformGrid(row, column, box, scramble=false) {
       //r1 c1 is the ahead
       // gsap.to(grid[r1][])
       //grid[r1][c1] = [...grid[r][c]];
+    }
+    if(checkIfSolved()){
+      //gg you win
+      endGame(STATES.COMPLETED);
     }
   }
 }
@@ -271,7 +305,6 @@ async function setUp() {
       i++;
     }
   }
-  console.log(grid);
   loop();
   // while(true){
   //   let n = rand(2);

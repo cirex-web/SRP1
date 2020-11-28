@@ -1,6 +1,9 @@
 body {
   margin: 0px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  height:100%;
 }
 
 h3 {
@@ -27,11 +30,23 @@ html {
   -webkit-box-sizing: border-box;
   border: 5px solid black;
 }
-#scramble{
+#side-panel-buttons{
+  align-content: center;
+  display: flex;
+  justify-content: center;  
   margin-top: 10px;
+
+}
+button{
+  margin: 0px 10px;
+  display:none;
+}
+#notice-text{
+  margin-top:10px;
+  display:none;
 }
 #main-content {
-  justify-content: center;
+  margin: auto;
   display: flex;
   align-items: center;
   position: relative;

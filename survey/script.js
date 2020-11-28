@@ -10,7 +10,7 @@ async function start() {
   $("#" + slide).css("opacity", 1);
   if(debug){
     move();
-
+    
   }
   hideLoader();
   $("#mc-choice-container input").click(async function (ev) {

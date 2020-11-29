@@ -51,8 +51,8 @@ function createEverything(data) {
   questionNum = data.length;
   for (let i = 0; i < data.length; i++) {
     let entry = data[i];
+    console.log(entry);
     createSlide(entry[1], i + 1);
-    console.log(entry[1]);
     if (entry[0] == "MC") {
       let choices = entry[2].split("/");
       for (let j = 0; j < choices.length; j++) {
@@ -211,6 +211,11 @@ function back() {
 }
 function wait(m) {
   return new Promise(r => setTimeout(r, m));
+}
+function end(data){
+  //pull data for the closing survey questions and transition slide to closing 
+
+  console.log(data);
 }
 //Later
 //TODO: Convert document.whatever to jquery cuz cool

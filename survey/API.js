@@ -10,6 +10,9 @@ var SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
 /**
  *  On load, called to load the auth2 library and API client library.
  */
+window.onload = () => {
+  handleClientLoad();
+}
 function handleClientLoad() {
   gapi.load("client:auth2", initClient);
 }
@@ -51,7 +54,7 @@ function getQuestions() {
         console.log("Error: " + response.result.error.message);
       }
     );
-}
+} 
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn && slide == 0) {
     move();

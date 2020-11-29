@@ -7,7 +7,7 @@
 
   <title>SRP</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/survey/style.css" />
 </head>
 
 <body style="text-align:center">
@@ -95,11 +95,20 @@
       Loading... Please wait
     </div>
   </div>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js" defer></script>
-  <script src="https://kit.fontawesome.com/b35280581b.js" crossorigin="anonymous"></script>
-  <script src="script.js" defer></script>
-  <script src="API.js" defer></script>
-  <script defer src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+  <script>
+    let URLS = ["https://kit.fontawesome.com/b35280581b.js",
+  "/survey/script.js","/survey/API.js","https://apis.google.com/js/api.js"];
+  URLS.forEach((el)=>{
+    $.getScript(el);
+  })
+  </script>
+  <!-- <script src="" defer></script>
+  <script src="" crossorigin="anonymous"></script>
+  <script src="" defer></script>
+  <script src="" defer></script> -->
+  <!-- <script defer src="" onload="handleClientLoad()"></script> -->
 </body>
 
 </html>

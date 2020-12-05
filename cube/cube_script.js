@@ -5,11 +5,11 @@ let win = {
   w: 500, //includes margin but not padding >:D 
   padding: 10,
   slidingTime: 0.13,
-  movable:false,
-  startTime:undefined,
-  curTime:undefined,
-  timeLimit:1200,
-  loopID:undefined,
+  movable: false,
+  startTime: undefined,
+  curTime: undefined,
+  timeLimit: 1200,
+  loopID: undefined,
   moves: 0
 };
 let box = {
@@ -24,7 +24,7 @@ let held = false;
 let prevBox = undefined;
 let grid = [...Array(win.size)].map(x => []); //TODO figure out what this is
 
-function start(){
+function start() {
   canvas = document.getElementById("c");
   con = canvas.getContext("2d");
 
@@ -39,7 +39,7 @@ function start(){
     mouseInside = false;
     prevBox = [-1, -1]; //invalid prevBox
   };
-  canvas.addEventListener("mousemove", function(ev) {
+  canvas.addEventListener("mousemove", function (ev) {
     //ev.which
     if (ev.which) {
       let pos = getMousePos(ev);
@@ -114,7 +114,7 @@ function loop() {
     }
   }
   con.fillStyle = "black";
-  con.lineWidth = win.padding*2;
+  con.lineWidth = win.padding * 2;
   con.beginPath();
   con.moveTo(0, 0);
   con.lineTo(win.w + 2 * win.padding, 0);
@@ -135,52 +135,50 @@ function snapToGrid() {
     }
   }
 }
-function getTimeSpent(){
+function getTimeSpent() {
   return parseInt((Date.now() - win.startTime.getTime()) / 1000);
 }
-function updateClock(dif =(win.timeLimit - getTimeSpent())){
-  
+function updateClock(dif = (win.timeLimit - getTimeSpent())) {
+
   let ogDif = dif;
   let sec = "00" + (dif % 60);
   dif = parseInt(dif / 60);
   let min = "00" + (dif % 60);
   dif = parseInt(dif / 60);
 
-  let time = (dif==0?"":dif + ":" )+ min.slice(-2) + ":" + sec.slice(-2);
-  if(win.curTime!=time){
+  let time = (dif == 0 ? "" : dif + ":") + min.slice(-2) + ":" + sec.slice(-2);
+  if (win.curTime != time) {
     win.curTime = time;
-    if(ogDif<0&&win.movable){
+    if (ogDif < 0 && win.movable) {
       endGame(STATES.OUT_OF_TIME);
-    }else{
+    } else {
       $("#clock").html(time);
     }
   }
 }
-function checkIfSolved(){
-  for(let r = 0; r< grid.length; r++){
-    for(let c = 0; c < grid.length; c++){
-      if(grid[r][c][0][0]!=r*grid.length+c+1){
+function checkIfSolved() {
+  for (let r = 0; r < grid.length; r++) {
+    for (let c = 0; c < grid.length; c++) {
+      if (grid[r][c][0][0] != r * grid.length + c + 1) {
         return false;
       }
     }
   }
   return true;
 }
-async function transformGrid(row, column, box, scramble=false, countAsMove = true) {
-  if(!win.movable)return;
-  if(!scramble){
-    if(countAsMove){ //another fix would be to move this below tramsformGrid
-      win.moves++;
-      $("#moves").html("Moves: "+win.moves);
-  
-    }
+async function transformGrid(row, column, box, scramble = false) {
+  if (!win.movable) return;
+  if (!scramble) {
+    win.moves++;
+    $("#moves").html("Moves: " + win.moves);
 
-    if(!win.startTime){
+
+    if (!win.startTime) {
       win.startTime = new Date();
-      $("#scramble").prop("disabled","");
+      $("#scramble").prop("disabled", "");
       await wait(10); //there's a weird glitch where startTime is undefined sometimes
       //start the clock!
-      win.loopID = setInterval(updateClock,2);
+      win.loopID = setInterval(updateClock, 2);
     }
   }
 
@@ -192,7 +190,7 @@ async function transformGrid(row, column, box, scramble=false, countAsMove = tru
   //r and c are actual coords
   //console.log(row + " " + column);
   if (row != 0 && column != 0) {
-    transformGrid(row, 0, box, false);
+    transformGrid(row, 0, box, true);
     transformGrid(0, column, box);
   } else {
     let start = [...grid[r][c]];
@@ -229,7 +227,7 @@ async function transformGrid(row, column, box, scramble=false, countAsMove = tru
       // gsap.to(grid[r1][])
       //grid[r1][c1] = [...grid[r][c]];
     }
-    if(checkIfSolved()){
+    if (!scramble && checkIfSolved()) {
       //gg you win
       endGame(STATES.COMPLETED);
     }
@@ -306,28 +304,24 @@ async function setUp() {
     }
   }
   loop();
-  // while(true){
-  //   let n = rand(2);
-  //   transformGrid(n,1-n,[rand(win.size),rand(win.size)]);
-  //   await wait(500);
-  // }
+
 }
-//c.fillRect(square.x, square.y, width, width);
-function rand(n, noZero = false){
-  let re = parseInt(Math.random()*n);
-  if(noZero&&re==1){
+
+function rand(n, noZero = false) {
+  let re = parseInt(Math.random() * n);
+  if (noZero && re == 1) {
     re++;
   }
   return re;
 }
-function wait(m){
-  return new Promise((re)=>{
-    setTimeout(re,m);
+function wait(m) {
+  return new Promise((re) => {
+    setTimeout(re, m);
   })
 }
-function scrambleCube(){
-  for(let i = 0; i<100; i++){
-    let num = rand(3)-1;
-    transformGrid(num,num==0?(rand(3,true)-1): 0,[rand(win.size),rand(win.size)],true);
+function scrambleCube() {
+  for (let i = 0; i < 100; i++) {
+    let num = rand(3) - 1;
+    transformGrid(num, num == 0 ? (rand(3, true) - 1) : 0, [rand(win.size), rand(win.size)], true);
   }
 }

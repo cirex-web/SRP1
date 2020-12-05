@@ -8,20 +8,65 @@
   <title>Yes</title>
 
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
 </head>
 
-<body onload="run()">
+<body>
+  <button id="signOut">Sign Out</button><br>
 
+
+  <div class="container" id="0">
+    <h1>Welcome to the experiment!</h1>
+    <h2>To begin, sign in with the Google account you registered with. </h2>
+
+    <button id="signIn">Sign in!</button><br>
+    <a href="javascript:void(0);" id="signUp">Don't have an account yet?</a>
+  </div>
+  <div class="container" id="1">
+    <div style="width:80%;margin: auto; text-align: center;">
+      <h1 class="txt" id="header">Login successful!</h1>
+
+      <h2 class="txt">Before you can start the experiment, you must sign (and upload) this
+        <a target="_blank"
+          href="https://cdn.glitch.com/a7fe7389-b199-4059-9b1e-4e0edb35a775%2FConsent%20Form1.pdf?v=1605467307433">consent
+          form</a>.<br> (It's ok to close the tab and come back later.)
+      </h2>
+      <div style="border-radius: 30px;
+      box-shadow: 10px 10px black;
+      background: #0079d32e;
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid;">
+        <progress value="0" max="100" id="upload-stat">10</progress><br />
+        <input type="file" id="submit-file" style="width:180px; padding:10px" accept=".pdf,image/*" /><br>
+        <h2>OR</h2>
+        <div id="drop_zone" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);"
+          ondragleave="dragLeaveHandler(event)">
+          <p style="font-size: 20px;margin: auto;">Drag and drop...</p>
+
+        </div>
+      </div>
+
+
+      <div id="error" style="text-align: left;color: red;"></div>
+    </div>
+  </div>
+  <div class="container" id = "2">
+    <h1>You're ready to begin!</h1>
+    <h2>Note: If you close the tab during the experiment your progress will be lost.</h2>
+    <button id="start">I'm ready</button>
+  </div>
   <script src="preq.js" defer></script>
-  <!-- The core Firebase JS SDK is always required and must be listed first haha yeah right -->
+
   <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
 
-
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js" defer></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.1.2/firebase-firestore.js"></script>
+
+
+  <script src="script.js"></script>
 
   <script>
     let firebaseConfig = {
@@ -37,8 +82,9 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-
+    run();
   </script>
+
 </body>
 
 </html>

@@ -15,7 +15,7 @@ function importParentStyles() { //from stackoverflow
                 cssString += cssRules[j].cssText;
         }
         else
-            cssString += parentStyleSheets[i].cssText;  // IE8 and earlier
+            cssString += parentStyleSheets[i].cssText; 
     }
     var style = document.createElement("style");
     style.type = "text/css";
@@ -23,7 +23,7 @@ function importParentStyles() { //from stackoverflow
         style.innerHTML = cssString;
     }
     catch (ex) {
-        style.styleSheet.cssText = cssString;  // IE8 and earlier
+        style.styleSheet.cssText = cssString; 
     }
     document.getElementsByTagName("head")[0].appendChild(style);
 }

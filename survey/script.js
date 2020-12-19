@@ -1,17 +1,54 @@
-let slide = 5;
+let slide = 0;
 let moving = false;
-let questionNum;
-let enteredVals = [];
-let debug = true;
+let slidesBefore = 0;
+let localData = {};
+let startOffset = 0;
+let consts = {
+  START: 0,
+  PUZZLE: 1,
+  END: 2,
+  DONE: 3,
+  START_QUESTIONS: -1,
+  END_QUESTIONS: 3
+};
+let user = {
+
+  [consts.START]: {
+    responses: []
+  },
+  [consts.PUZZLE]: {
+
+  },
+  [consts.END]: {
+    responses: []
+  }
+
+};
 async function start() {
+  localData = localStorage.getObj("local");
+
+
+  if (!localData.pos) {
+    localData.pos = consts.START;
+    localStorage.setObj("local", localData);
+  }
+  if (localStorage.getObj("user") != null) {
+    user = localStorage.getObj("user");
+  }
+
+  if (localData.pos == consts.START) {
+    initStartQuestions();
+  } else if (localData.pos == consts.END) {
+    initEndQuestions();
+  } else {
+    startPuzzle();
+  }
+
   $("#" + slide).css("display", "flex");
   $("#" + slide).css("opacity", 0);
   await wait(100);
   $("#" + slide).css("opacity", 1);
-  if(debug){
-    move();
-    
-  }
+
   hideLoader();
   $("#mc-choice-container input").click(async function (ev) {
     updateButtonState();
@@ -21,58 +58,77 @@ async function start() {
     move();
   });
 }
-async function move() {
-
-  await transferSlides(1);
-  if (slide == questionNum + 1) {
-    for (let i = 1; i <= questionNum; i++) {
-      let selected = $("[name=form-choice-" + i + "]:checked");
-      let chosenText;
-      if (selected.length) {
-        chosenText = ($("[for=" + selected[0].id).text());
-      } else {
-        chosenText = ($("#text-" + i + "-input [type=\"text\"]").val());
-      }
-
-      enteredVals.push(chosenText);
-
+function move() {
+  transferSlides(1);
+}
+function initStartQuestions() {
+  startOffset = 1;
+  loadTemplate("start", 0);
+  createEverything(localData.questions[consts.START_QUESTIONS]);
+}
+function initEndQuestions() {
+  startOffset = 0;
+  let allQuestions = localData.questions[user[consts.PUZZLE].endState];
+  for(let q of localData.questions[consts.END_QUESTIONS]){
+    allQuestions.push(q);
+  }
+  createEverything(allQuestions);
+  console.log(allQuestions);
+  console.log("Supposedly creating end questions");
+}
+function getEnteredData() {
+  let vals = [];
+  for (let i = startOffset; i < slidesBefore; i++) {
+    let selected = $("[name=form-choice-" + i + "]:checked");
+    let chosenText;
+    if (selected.length) {
+      chosenText = ($("[for=" + selected[0].id).text());
+    } else {
+      chosenText = ($("#text-" + i + "-input [type=\"text\"]").val());
     }
 
-
+    vals.push(chosenText);
   }
-  // if (override||(!moving && maxSlide == slide)) {
-  //   transferSlides(1);
-  // }
+  return vals;
 }
 function hideLoader() {
   $("#loading").addClass("hidden");
 }
 function createEverything(data) {
-  questionNum = data.length;
-  for (let i = 0; i < data.length; i++) {
-    let entry = data[i];
-    console.log(entry);
-    createSlide(entry[1], i + 1);
-    if (entry[0] == "MC") {
-      let choices = entry[2].split("/");
-      for (let j = 0; j < choices.length; j++) {
-        addChoice(choices[j], i + 1);
-      }
-    } else if (entry[0] == "TEXT") {
-      addBox(i + 1, entry[2]);
-    }
-  }
-  createEndSlide();
-  start();
+  slidesBefore += data.length + startOffset;
+  for (let i = startOffset; i < data.length + startOffset; i++) {
+    let entry = data[i - startOffset];
 
-  //console.log(data);
+    createSlide(entry.question, i);
+    if (entry.type == "MC") {
+      let choices = entry.options.split("/");
+      for (let j = 0; j < choices.length; j++) {
+        addChoice(choices[j], i);
+      }
+    } else if (entry.type == "TEXT") {
+      addBox(i, entry.options);
+    } else {
+
+      updateButtonState(i); // Not expecting user response
+    }
+    if(i==startOffset){
+      $("#buttonB-"+i).css("display","none");
+    }
+
+  }
+  createEndSlide(localData.pos);
 }
-function createEndSlide() {
-  let t = document.getElementById("survey-results");
-  let c = t.content.cloneNode(true);
-  c.getElementById("NUM").id = questionNum + 1;
+function createEndSlide(pos) {
+  let id = "";
+  console.log("Position: " + pos);
+  if (pos == consts.START) {
+    id = "survey-results";
+  } else {
+    id = "fin";
+  }
+  let c = document.getElementById(id).content.cloneNode(true);
+  c.getElementById("NUM").id = slidesBefore;
   $("body").append(c);
-  
 }
 function addBox(i, suffix) {
   let temp = document.getElementById("text");
@@ -93,10 +149,13 @@ function addBox(i, suffix) {
   });
 }
 
-function updateButtonState(s = slide, override = false) {
+function updateButtonState(s = slide) {
   let num = parseInt($("#" + "text-" + s + "-input input").val());
-  if ($("[name=form-choice-" + s + "]:checked").length > 0 || (num > 0 && num <= 20)) {
+
+  if ($("[name=form-choice-" + s + "]:checked").length > 0 || (num > 0 && num <= 20)
+    || ($("[name=form-choice-" + s + "]").length == 0 && isNaN(num))) {
     $("#buttonN-" + s).prop("disabled", false);
+
   } else {
     $("#buttonN-" + s).prop("disabled", true);
   }
@@ -142,18 +201,23 @@ function transferSlides(moveAmount) {
     $("#buttonN-" + slide).prop("disabled", true);
     $("#" + slide).css({ pointerEvents: "none" });
 
-    if (slide + moveAmount == questionNum + 1) { // ONE
-      setTimeout(() => {
-        let endSlide = questionNum+1;
-        $("#" + (endSlide)).css("opacity", 0);
+    if (slide + moveAmount == slidesBefore) {
+      if(localData.pos == consts.START){
+        setTimeout(() => {
 
-        setTimeout(()=>{
-          displayStat(endSlide);
-        },500);
+          $("#" + (slidesBefore)).css("opacity", 0);
+  
+          setTimeout(() => {
+            displayStat();
+          }, 500);
+        }, 1000 + Math.random() * 1000);
+      }else if(localData.pos == consts.END){
+        user[consts.END].responses = getEnteredData();
+        localData.pos = consts.DONE;
+        updateAndRefresh();
 
+      }
 
-
-      }, 1000 + Math.random() * 1000);
     }
 
     moving = true;
@@ -174,36 +238,51 @@ function transferSlides(moveAmount) {
     }, 300);
   });
 }
-async function displayStat(endSlide){
+async function displayStat() {
 
-  $("#" + (endSlide)).html("");
+  $("#" + (slidesBefore)).html("");
   let temp = document.getElementById("just-text");
   let clone = temp.content.cloneNode(true);
+
+  clone.getElementById("stat").innerHTML = localData.str;
+  $("#" + (slidesBefore)).append(clone);
+  $("#" + (slidesBefore)).css("opacity", 1);
+
+  setTimeout(() => {
+    $(".info").css("max-height", "150px");
+    $(".info").css("opacity", "1");
+
+    setTimeout(() => {
+      $("#buttonN-puzzle").html("Let's go!");
+      $("#buttonN-puzzle").prop("disabled", "");
+    }, 1000);
+
+  }, 1500);
+}
+function startPuzzle() {
+  if (localData.pos == consts.START) {
+    user[consts.START].responses = getEnteredData();
+    localData.pos = consts.PUZZLE;
+    updateAndRefresh();
+
+  } else {
+    loadTemplate("puzzle", 0);
+  }
+
+}
+function updateAndRefresh() {
+  localStorage.setObj("local", localData);
+  localStorage.setObj("user", user);
+  if(localData.pos!=consts.DONE){
+    parent.reload();
+  }else{
+    parent.finishExperiment();
+  }
   
-  clone.getElementById("stat").innerHTML = parseInt(Math.random() * 100) + "% of partcipants with similar responses have completed solved the challenge."
-  $("#" + (endSlide)).append(clone);
-  $("#" + (endSlide)).css("opacity", 1);
-
-  setTimeout(()=>{
-    $(".info").css("max-height","250px");
-    $(".info").css("opacity","1");
-
-    startPuzzle();
-    // setTimeout(()=>{
-    //   $(".info").css("opacity","1");
-    // },500);
-  },1500);
 }
-function startPuzzle(){
-  let b = $("body")[0];
-  let clone = $("#puzzle")[0].content.cloneNode(true);
-  b.appendChild(clone);
-  $("#NUM")[0].id = slide+1;
-}
-function puzzleLoaded(){
-  //if it stil broke, start fiddling with it
-  console.log("a");
-  $("#buttonN-puzzle").prop("disabled","");
+function loadTemplate(id, num) {
+  $("body").append($("#" + id).html());
+  $("#NUM")[0].id = num;
 
 }
 function back() {
@@ -212,10 +291,12 @@ function back() {
 function wait(m) {
   return new Promise(r => setTimeout(r, m));
 }
-function end(data){
+function end(data) { //TODO: get rid of this wait but isn't this important
   //pull data for the closing survey questions and transition slide to closing 
 
-  console.log(data);
+  user[consts.PUZZLE] = data;
+  localData.pos = consts.END;
+  updateAndRefresh();
 }
-//Later
+
 //TODO: Convert document.whatever to jquery cuz cool

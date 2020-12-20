@@ -11,6 +11,10 @@ body {
   height: 100%;
 /*   opacity: 0; */
 }
+iframe{
+  opacity: 0;
+  transition: 1s all;
+}
 #loading {
   height: auto;
   /* justify-content: center; */

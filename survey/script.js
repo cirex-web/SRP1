@@ -26,8 +26,10 @@ let user = {
 };
 async function start() {
   localData = localStorage.getObj("local");
-
-
+  console.log(localData);
+  window.onbeforeunload = function () {
+    return true;
+  };
   if (!localData.pos) {
     localData.pos = consts.START;
     localStorage.setObj("local", localData);
@@ -64,12 +66,15 @@ function move() {
 function initStartQuestions() {
   startOffset = 1;
   loadTemplate("start", 0);
+
   createEverything(localData.questions[consts.START_QUESTIONS]);
 }
+
 function initEndQuestions() {
   startOffset = 0;
-  let allQuestions = localData.questions[user[consts.PUZZLE].endState];
-  for(let q of localData.questions[consts.END_QUESTIONS]){
+  let allQuestions = [...localData.questions[user[consts.PUZZLE].endState]];
+  console.log(allQuestions);
+  for (let q of localData.questions[consts.END_QUESTIONS]) {
     allQuestions.push(q);
   }
   createEverything(allQuestions);
@@ -111,8 +116,8 @@ function createEverything(data) {
 
       updateButtonState(i); // Not expecting user response
     }
-    if(i==startOffset){
-      $("#buttonB-"+i).css("display","none");
+    if (i == startOffset) {
+      $("#buttonB-" + i).css("display", "none");
     }
 
   }
@@ -193,7 +198,13 @@ function addChoice(val, slideNum) {
   clone.children[0].getElementsByTagName("label")[0].htmlFor = id;
   document.getElementById("form-" + slideNum).appendChild(clone);
 }
+function showPuzzle() {
+  setTimeout(() => {
+    $("iframe").css("opacity", 1);
 
+  }, 1);
+
+}
 function transferSlides(moveAmount) {
   return new Promise(re => {
     $("#" + slide).css("opacity", 0);
@@ -202,16 +213,16 @@ function transferSlides(moveAmount) {
     $("#" + slide).css({ pointerEvents: "none" });
 
     if (slide + moveAmount == slidesBefore) {
-      if(localData.pos == consts.START){
+      if (localData.pos == consts.START) {
         setTimeout(() => {
 
           $("#" + (slidesBefore)).css("opacity", 0);
-  
+
           setTimeout(() => {
             displayStat();
           }, 500);
         }, 1000 + Math.random() * 1000);
-      }else if(localData.pos == consts.END){
+      } else if (localData.pos == consts.END) {
         user[consts.END].responses = getEnteredData();
         localData.pos = consts.DONE;
         updateAndRefresh();
@@ -273,12 +284,12 @@ function startPuzzle() {
 function updateAndRefresh() {
   localStorage.setObj("local", localData);
   localStorage.setObj("user", user);
-  if(localData.pos!=consts.DONE){
+  if (localData.pos != consts.DONE) {
     parent.reload();
-  }else{
+  } else {
     parent.finishExperiment();
   }
-  
+
 }
 function loadTemplate(id, num) {
   $("body").append($("#" + id).html());

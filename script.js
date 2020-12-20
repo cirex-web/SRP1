@@ -50,7 +50,7 @@ function run() {
   });
 }
 function finishExperiment(){
-  console.assert("finih!") 
+  console.warn("finih!");
   //TODO: Upload user data and clear it and show logout button. 
 }
 function reload(){

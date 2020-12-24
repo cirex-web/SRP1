@@ -211,7 +211,6 @@ function beginExperiment() {
 function dragOverHandler(ev) {
   $("#drop_zone").css("border", "3px solid rgba(3, 155, 229, 1)");
   ev.preventDefault();
-
 }
 function dragLeaveHandler(ev) {
   $("#drop_zone").css("border", "3px solid black");
@@ -220,12 +219,13 @@ function dragLeaveHandler(ev) {
 
 function dropHandler(ev) {
   $("#drop_zone").css("border", "3px solid black");
-
-  // Prevent default behavior (Prevent file from being opened)
   ev.preventDefault();
   handleFiles(ev.dataTransfer.files);
 }
 async function handleFiles(files) {
+  if(files.length==0){
+    return;
+  }
   const dT = new DataTransfer();
   dT.items.add(files[0]);
   let type = files[0].type;
@@ -237,8 +237,9 @@ async function handleFiles(files) {
 
     $("#drop_zone").css("border", "3px solid red");
     $("#error").html("File type " + type + " not supported. If you think this is an error, try manually uploading your file");
-    await wait(1000);
-    $("#drop_zone").css("border", "3px solid black");
+    setTimeout(()=>{
+      $("#drop_zone").css("border", "3px solid black");
+    },1000);
   }
 
 }
@@ -246,29 +247,23 @@ async function handleFiles(files) {
 async function processFileInput(e) {
   let file = e.files[0];
   if (file) {
-    let ref = firebase.storage().ref(id + "/" + "form");
+    $("#drop_zone").css("max-height","10px");
+    $("#error").html("");
+    let ref = firebase.storage().ref(resources.user.uid + "/" + "form");
 
     let task = ref.put(file);
-    $("progress").css("height", "0");
-    $("#submit-file").css("width", "50%");
-    $();
-    await wait(50);
-    $("progress").css("height", "30px");
-    await wait(200);
+
     task.on(
       "state_changed",
       s => {
-        $("#upload-stat").val((s.bytesTransferred / s.totalBytes) * 100);
+        $("#progress_bar").css("width",(s.bytesTransferred / s.totalBytes) * 100+"%");
       },
       e => {
+        $("#drop_zone").removeAttr('style');
         $("#error").html(e);
       },
       async () => {
-        showSlide(2);
-        await wait(500);
-        $("#submit-file").css("width", "180px");
-        $("progress").css("height", "0");
-        $("#upload-stat").val(0);
+        location = location;
       }
     );
   }

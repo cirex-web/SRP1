@@ -39,7 +39,7 @@ async function start() {
     startPuzzle();
   }
 
-  $("#" + slide).css("display", "flex");
+  $("#" + slide).css("display", "block");
   $("#" + slide).css("opacity", 0);
   await wait(100);
   $("#" + slide).css("opacity", 1);
@@ -134,8 +134,8 @@ function addBox(i, suffix) {
   let temp = document.getElementById("text");
   let clone = temp.content.cloneNode(true);
 
-  clone.getElementById("inner-text").id = "text-" + i + "-input";
-  clone.getElementById("text-text").innerHTML = suffix;
+  clone.querySelector(".text-input-container").id = "text-" + i + "-input";
+  clone.querySelector(".text-input-label").innerHTML = suffix;
   document.getElementById("form-" + i).appendChild(clone);
 
   $("#" + "text-" + i + "-input input").on("input", ev => {
@@ -238,7 +238,7 @@ function transferSlides(moveAmount) {
       moving = false;
       slide += moveAmount;
 
-      $("#" + slide).css("display", "flex");
+      $("#" + slide).css("display", "block");
       $("#" + slide).css("opacity", 0);
       await wait(100);
       $("#" + slide).css("opacity", 1);

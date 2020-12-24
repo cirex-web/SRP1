@@ -78,7 +78,11 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-    run();
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      $("body").html('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" style="position:fixed;width:100%;height:100%;z-index: 2000;left: 0;top: 0;border: none;"></iframe>')
+    }else{
+      run();
+    }
   </script>
 
 </body>

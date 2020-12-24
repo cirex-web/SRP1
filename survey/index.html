@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en"> 
 
 <head>
   <meta charset="utf-8" />
@@ -10,30 +10,28 @@
   <link rel="stylesheet" href="/survey/style.css" />
 </head>
  
-<body style="text-align:center">
-  <!-- <div class="container" id="0">
-    
-  </div> -->
+<body>
+
   <template id="survey-results">
     <div class="container" id="NUM">
-      <div class="txt" style="margin: auto;">
+      <h2 class="txt">
         Survey complete. Analyzing your responses...
-      </div>
+      </h2>
 
     </div>
   </template>
   <template id="start">
     <div class="container" id="NUM">
-      <div style="width:80%;margin: auto">
-        <div class="txt" style="font-size:50px; margin-bottom:20px">
+      <div>
+        <h1>
           You have succesfully joined the experiment
-        </div>
+        </h1>
   
-        <div class="txt" style="font-size:20px">
+        <p>
           If you close this page during the experiment, your progress may not be
           saved. <br>
           To start, please answer the following questions.
-        </div>
+        </p>
   
         <button onclick="move()">
           Begin!
@@ -44,42 +42,44 @@
   </template>
   <template id="fin">
     <div class="container" id="NUM">
-      <div class="txt" style="margin: auto;">
+      <h1 style="margin: auto;">
         Uploading results... 
-      </div>
+      </h1>
     </div>
   </template>
   <template id="form">
     <div class="container" id="NUM">
-      <div style="min-width: 300px; width:50%;margin: auto;text-align:left">
-        <div class="txt" style="font-size:30px;font-weight: 600; margin-bottom: 20px;" id="question">
+      <div class="question">
+        <h1 class="txt" id="question">
           QUESTION
-        </div>
+        </h1>
 
-        <form style="margin:0px" id="form-NUM"></form>
-        <button id="buttonB-NUM" onclick="back()">Back</button>
-        <button id="buttonN-NUM" onclick="move()">Next</button>
-      </div>
+        <form id="form-NUM"></form>
+        <div class="button-container">
+          <button id="buttonB-NUM" onclick="back()">Back</button>
+          <button id="buttonN-NUM" onclick="move()">Next</button>  
+        </div>
+     </div>
     </div>
   </template>
   <template id="text">
-    <div style="display:flex" id="inner-text">
-      <input type="text" />
-      <div id="text-text"></div>
+    <div class="text-input-container">
+      <input type="text"/>
+      <div class="text-input-label"></div>
     </div>
   </template>
   <template id="mc">
     <div id="mc-choice-container">
       <input type="radio" />
-      <label></label><br />
+      <label></label><br>
     </div>
   </template>
   <template id="just-text">
 
     <div style="margin: auto;">
-      <div class="txt" id="stat">
+      <h2 id="stat">
         [TEXT]
-      </div>
+      </h2>
       <div class="info">
         When you're ready, click the button below to start. <br>
 

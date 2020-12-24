@@ -19,6 +19,8 @@ let config = {
 function run() {
   updateLocalVar(true);
 
+  
+
   resources.provider = new firebase.auth.GoogleAuthProvider();
   resources.storageRef = firebase.storage().ref();
   resources.firestore = firebase.firestore();
@@ -34,6 +36,7 @@ function run() {
 
       let requests = [getUserData(user.uid), getQuestions(), fetchDocument()];
       Promise.all(requests).then(() => {
+        console.log(local);
         if(local.finished){
           reload();
         }else{
@@ -47,6 +50,7 @@ function run() {
     }
   });
 }
+
 function finishExperiment() {
 
   uploadUserData(resources.user.uid, localStorage.getObj("user")).then(() => {
@@ -55,7 +59,8 @@ function finishExperiment() {
   });
 }
 function uploadUserData(uid, data) {
-  console.log("uploaded: "+data);
+  console.log("uploaded some data");
+  data.timeStamp = new Date().getTime();
   const personRef = resources.firestore.collection("users").doc(uid);
   return personRef.set({
     data: data
@@ -199,14 +204,6 @@ function addQuestion(arrayName, question, type, options) {
 function beginExperiment() {
   reload();
 }
-
-
-
-
-
-
-
-
 
 function dragOverHandler(ev) {
   $("#drop_zone").css("border", "3px solid rgba(3, 155, 229, 1)");

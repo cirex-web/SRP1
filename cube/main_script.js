@@ -68,7 +68,7 @@ function endGame(state){ //time in seconds
     $("#scramble").prop("disabled","disabled");
     $("#scramble-2").prop("disabled","disabled");
 
-    parent.end({
+    parent.endGame({
         time: getTimeSpent(),
         moves: win.moves,
         endState: state

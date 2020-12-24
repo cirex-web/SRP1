@@ -10,22 +10,15 @@ let local = {
   finished: false,
   str: "",
   level: [],
-  hasConsentForm: false
+  hasConsentForm: false,
+  pos: 0
 }
 let config = {
-  vars: ["PERCENT","OUTCOME"]
+  vars: ["PERCENT", "OUTCOME"]
 }
 function run() {
+  updateLocalVar(true);
 
-  if(localStorage.getObj("local")!=null){
-    local = localStorage.getObj("local");
-    
-  }
-  // console.log(local);
-  if(local.pos!=undefined){
-    reload();
-    return;
-  }
   resources.provider = new firebase.auth.GoogleAuthProvider();
   resources.storageRef = firebase.storage().ref();
   resources.firestore = firebase.firestore();
@@ -36,31 +29,59 @@ function run() {
   $("#start").click(beginExperiment);
 
   firebase.auth().onAuthStateChanged(async function (user) {
-
     resources.user = user;
     if (user) {
-      let requests = [getUserData(user.uid),getQuestions(),fetchDocument()];
-      Promise.all(requests).then(()=>{
-        goToSlide(local.hasConsentForm?2:1, 0);
-        window.localStorage.setObj('local', local);
-      });
+
+      let requests = [getUserData(user.uid), getQuestions(), fetchDocument()];
+      Promise.all(requests).then(() => {
+        if(local.finished){
+          reload();
+        }else{
+          goToSlide(local.hasConsentForm ? 2 : 1, 0);
+          localStorage.setObj('local', local);
+          
+        }
+     });
     } else {
       goToSlide(0, 0);
     }
   });
 }
-function finishExperiment(){
-  console.warn("finih!");
-  //TODO: Upload user data and clear it and show logout button. 
+function finishExperiment() {
+
+  uploadUserData(resources.user.uid, localStorage.getObj("user")).then(() => {
+    localStorage.removeItem("user");
+    reload();
+  });
 }
-function reload(){
-  
-  $("body").html('<object data="/survey/index.html"/>');
-  
-  console.log("page should reload");
+function uploadUserData(uid, data) {
+  console.log("uploaded: "+data);
+  const personRef = resources.firestore.collection("users").doc(uid);
+  return personRef.set({
+    data: data
+  }, {
+    merge: true
+  });
+}
+function reload() {
+  updateLocalVar();
+  console.log("finished: "+local.finished);
+  if(local.finished){
+    if($("object").length>0){
+      console.log("here");
+      $("body").html("");
+      location = location;
+    }else{
+      goToSlide(3);
+    }
+    
+  }else{
+    $("body").html('<object data="/survey/index.html"/>');
+
+  }
 }
 async function getUserData(uid) {
-  return new Promise(async (re)=>{
+  return new Promise(async (re) => {
     let doc = await resources.firestore.collection("users").doc(uid).get();
     if (doc.exists && doc.data().data) {
       local.finished = true;
@@ -72,7 +93,6 @@ async function getUserData(uid) {
       await resources.firestore.collection("users").doc(uid).set({
         level: generateLevel()
       });
-      console.log("k");
       await getUserData(uid);
     }
 
@@ -81,21 +101,30 @@ async function getUserData(uid) {
   });
 
 }
-function generateVarString(){
-  return new Promise((re)=>{
+function updateLocalVar(select=false){
+  if (localStorage.getObj("local") != null) {
+    if(select){
+      local.pos = localStorage.getObj("local").pos;
+    }else{
+      local = localStorage.getObj("local");
+
+    }
+  }
+}
+function generateVarString() {
+  return new Promise((re) => {
     let ref = resources.firestore.collection("questions");
 
-    ref.doc("vars").get().then((doc)=>{
+    ref.doc("vars").get().then((doc) => {
       let d = doc.data();
-      
-      if(local.str[0]==-1){
+      if (local.str[0] == -1) {
         local.str = d.control;
-      }else{
+      } else {
         local.str = d.default;
-        config.vars.forEach((el,i)=>{
-          local.str = local.str.replace("["+el+"]",d[el][parseInt(local.level[i])]);
+        config.vars.forEach((el, i) => {
+          local.str = local.str.replace("[" + el + "]", d[el][parseInt(local.level[i])]);
         });
-        
+
       }
       console.log(local.str);
       re();
@@ -103,10 +132,10 @@ function generateVarString(){
   });
 
 }
-function generateLevel(){
-  let i = parseInt(Math.random()*3)-1;
-  let j = parseInt(Math.random()*2);
-  return i+" "+j;
+function generateLevel() {
+  let i = parseInt(Math.random() * 3) - 1;
+  let j = parseInt(Math.random() * 2);
+  return i + " " + j;
 }
 function goToSlide(num, delay = 400) {
   $(".container").css("opacity", 0);
@@ -120,7 +149,7 @@ function goToSlide(num, delay = 400) {
   }, delay);
 }
 function fetchDocument() {
-  return new Promise(re=>{
+  return new Promise(re => {
     resources.storageRef.child(resources.user.uid + "/").listAll().then(function (res) {
       if (res.items.length) {
         local.hasConsentForm = true;
@@ -145,9 +174,9 @@ function getQuestions() {
     let ref = resources.firestore.collection("questions");
 
     ref.doc("all").get().then((doc) => {
-        let data = doc.data();
-        local.questions = data;
-        re();
+      let data = doc.data();
+      local.questions = data;
+      re();
     })
 
   });
@@ -169,8 +198,6 @@ function addQuestion(arrayName, question, type, options) {
 }
 function beginExperiment() {
   reload();
-  // $("body").load("/survey/index.html");
-  // window.location.href = "/survey/index.html"; //change to replace when deployed 
 }
 
 

@@ -13,23 +13,16 @@ let consts = {
 };
 let user = {
 
-  [consts.START]: {
-    responses: []
-  },
-  [consts.PUZZLE]: {
-
-  },
-  [consts.END]: {
-    responses: []
-  }
-
+  [consts.START]: [],
+  [consts.PUZZLE]: {},
+  [consts.END]: []
 };
 async function start() {
-  localData = localStorage.getObj("local");
-  console.log(localData);
   window.onbeforeunload = function () {
     return true;
   };
+  
+  localData = localStorage.getObj("local");
   if (!localData.pos) {
     localData.pos = consts.START;
     localStorage.setObj("local", localData);
@@ -72,14 +65,16 @@ function initStartQuestions() {
 
 function initEndQuestions() {
   startOffset = 0;
+  if(user[consts.PUZZLE].endState==undefined){
+    localStorage.clear();
+    window.reload();
+  }
+  console.log(localData.questions[user[consts.PUZZLE].endState]);
   let allQuestions = [...localData.questions[user[consts.PUZZLE].endState]];
-  console.log(allQuestions);
   for (let q of localData.questions[consts.END_QUESTIONS]) {
     allQuestions.push(q);
   }
   createEverything(allQuestions);
-  console.log(allQuestions);
-  console.log("Supposedly creating end questions");
 }
 function getEnteredData() {
   let vals = [];
@@ -223,8 +218,9 @@ function transferSlides(moveAmount) {
           }, 500);
         }, 1000 + Math.random() * 1000);
       } else if (localData.pos == consts.END) {
-        user[consts.END].responses = getEnteredData();
+        user[consts.END] = getEnteredData();
         localData.pos = consts.DONE;
+        localData.finished = true;
         updateAndRefresh();
 
       }
@@ -272,7 +268,7 @@ async function displayStat() {
 }
 function startPuzzle() {
   if (localData.pos == consts.START) {
-    user[consts.START].responses = getEnteredData();
+    user[consts.START] = getEnteredData();
     localData.pos = consts.PUZZLE;
     updateAndRefresh();
 
@@ -282,13 +278,20 @@ function startPuzzle() {
 
 }
 function updateAndRefresh() {
-  localStorage.setObj("local", localData);
-  localStorage.setObj("user", user);
-  if (localData.pos != consts.DONE) {
-    parent.reload();
-  } else {
+  console.log("updating and refreshing");
+  updateStorage("local",localData);
+  updateStorage("user",user);
+  if (localData.pos == consts.DONE) {//TODO: Change back to DONE
+    localData.pos = consts.START;
+    updateStorage("local",localData);
     parent.finishExperiment();
+  } else {
+    parent.reload();
   }
+
+}
+function updateStorage(name, data){
+  localStorage.setObj(name, data);
 
 }
 function loadTemplate(id, num) {
@@ -302,9 +305,7 @@ function back() {
 function wait(m) {
   return new Promise(r => setTimeout(r, m));
 }
-function end(data) { //TODO: get rid of this wait but isn't this important
-  //pull data for the closing survey questions and transition slide to closing 
-
+function endGame(data) { 
   user[consts.PUZZLE] = data;
   localData.pos = consts.END;
   updateAndRefresh();

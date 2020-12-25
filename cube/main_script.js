@@ -61,18 +61,35 @@ window.onload = () => {
     })
 }
 
-function endGame(state){ //time in seconds
+async function endGame(state){ //time in seconds
     //maybe also include total moves 
     clearInterval(win.loopID);
     win.movable = false; //stops player movement
     $("#scramble").prop("disabled","disabled");
     $("#scramble-2").prop("disabled","disabled");
+    if(state==STATES.COMPLETED){
+        $("#side-panel").css("background","#75ef80");
+        await wait(1000);
+    }
+    if(inIframe()){
+        parent.endGame({
+            time: getTimeSpent(),
+            moves: win.moves,
+            endState: state
+        });
+    }
 
-    parent.endGame({
-        time: getTimeSpent(),
-        moves: win.moves,
-        endState: state
-    });
+}
+function inIframe() {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
 
-
+function wait(m){
+    return new Promise((re)=>{
+        setTimeout(re,m);
+    })
 }

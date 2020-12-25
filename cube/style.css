@@ -29,6 +29,7 @@ html {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   border: 5px solid black;
+  transition: .4s background;
 }
 #side-panel-buttons{
   padding: 20px;

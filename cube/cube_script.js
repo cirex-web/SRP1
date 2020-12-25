@@ -152,7 +152,7 @@ function updateClock(dif = (win.timeLimit - getTimeSpent())) {
     if (ogDif < 0 && win.movable) {
       endGame(STATES.OUT_OF_TIME);
     } else {
-      $("#clock").html(time);
+      $("#clock").html("Time left: " + time);
     }
   }
 }

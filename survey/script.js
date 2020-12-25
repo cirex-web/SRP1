@@ -21,7 +21,7 @@ async function start() {
   window.onbeforeunload = function () {
     return true;
   };
-  
+
   localData = localStorage.getObj("local");
   if (!localData.pos) {
     localData.pos = consts.START;
@@ -65,7 +65,7 @@ function initStartQuestions() {
 
 function initEndQuestions() {
   startOffset = 0;
-  if(user[consts.PUZZLE].endState==undefined){
+  if (user[consts.PUZZLE].endState == undefined) {
     localStorage.clear();
     window.reload();
   }
@@ -151,21 +151,34 @@ function addBox(i, suffix) {
 
 function updateButtonState(s = slide) {
   let num = parseInt($("#" + "text-" + s + "-input input").val());
+  let question = $("#"+s+" .question").html();
+  let clickable = false;
+  if (question.includes("a scale")) {
+    if (num > 0 && num <= 5) {
+      clickable = true;
 
-  if ($("[name=form-choice-" + s + "]:checked").length > 0 || (num > 0 && num <= 20)
-    || ($("[name=form-choice-" + s + "]").length == 0 && isNaN(num))) {
-    $("#buttonN-" + s).prop("disabled", false);
-
-  } else {
-    $("#buttonN-" + s).prop("disabled", true);
+    }
+  } else if (num > 0 && num <= 15) {
+    clickable = true;
+  } else if (isNaN(num)) {
+    if($("#"+s+" form").html()===""){
+      clickable = true;
+    }
   }
+  if ($("[name=form-choice-" + s + "]:checked").length > 0) {
+    clickable = true;
+  }
+  console.log(s,num,clickable);
+
+  $("#buttonN-" + s).prop("disabled", !clickable);
+
 }
 function createSlide(question, id) {
   let b = $("body")[0];
   let clone = document.getElementById("form").content.cloneNode(true);
   clone.getElementById("NUM").id = id;
   clone.getElementById("form-NUM").id = "form-" + id;
-  clone.getElementById("question").innerHTML = question;
+  clone.querySelector(".question").innerHTML = question;
   clone.getElementById("buttonB-NUM").id = "buttonB-" + id;
   clone.getElementById("buttonN-NUM").id = "buttonN-" + id;
 
@@ -179,7 +192,8 @@ function addChoice(val, slideNum) {
     .replaceAll(" ", "")
     .replaceAll("'", "")
     .replaceAll("(", "")
-    .replaceAll(")", "");
+    .replaceAll(")", "")
+    .replaceAll("!", "");
   while ($("#" + conVal + "-" + i).length > 0) {
     i++;
   }
@@ -207,7 +221,10 @@ function transferSlides(moveAmount) {
     $("#buttonN-" + slide).prop("disabled", true);
     $("#" + slide).css({ pointerEvents: "none" });
 
+    let notAQuestion = false;
+
     if (slide + moveAmount == slidesBefore) {
+      notAQuestion = true;
       if (localData.pos == consts.START) {
         setTimeout(() => {
 
@@ -233,10 +250,12 @@ function transferSlides(moveAmount) {
 
       $("#buttonB-" + slide).prop("disabled", false);
       $("#" + slide).css({ pointerEvents: "all" });
-      updateButtonState(slide);
       re();
       moving = false;
       slide += moveAmount;
+      if(!notAQuestion){
+        updateButtonState(slide);
+      }
 
       $("#" + slide).css("display", "block");
       $("#" + slide).css("opacity", 0);
@@ -251,12 +270,12 @@ async function displayStat() {
   let temp = document.getElementById("just-text");
   let clone = temp.content.cloneNode(true);
 
-  clone.getElementById("stat").innerHTML = localData.str;
+  clone.getElementById("stat").innerHTML = "Based on current data, " + localData.str;
   $("#" + (slidesBefore)).append(clone);
   $("#" + (slidesBefore)).css("opacity", 1);
 
   setTimeout(() => {
-    $(".info").css("max-height", $(".info .content").height()+80+"px");
+    $(".info").css("max-height", $(".info .content").height() + 80 + "px");
     $(".info").css("opacity", "1");
 
     setTimeout(() => {
@@ -278,19 +297,18 @@ function startPuzzle() {
 
 }
 function updateAndRefresh() {
-  console.log("updating and refreshing");
-  updateStorage("local",localData);
-  updateStorage("user",user);
+  updateStorage("local", localData);
+  updateStorage("user", user);
   if (localData.pos == consts.DONE) {//TODO: Change back to DONE
     localData.pos = consts.START;
-    updateStorage("local",localData);
+    updateStorage("local", localData);
     parent.finishExperiment();
   } else {
     parent.reload();
   }
 
 }
-function updateStorage(name, data){
+function updateStorage(name, data) {
   localStorage.setObj(name, data);
 
 }
@@ -305,7 +323,7 @@ function back() {
 function wait(m) {
   return new Promise(r => setTimeout(r, m));
 }
-function endGame(data) { 
+function endGame(data) {
   user[consts.PUZZLE] = data;
   localData.pos = consts.END;
   updateAndRefresh();

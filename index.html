@@ -11,7 +11,10 @@
 </head>
 
 <body>
-
+  <div class="loading-container">
+    <span class="loading-anim"></span>
+    <p id="loading-text">Loading...</p>
+  </div>
   <div class="container" id="0">
     <h1>Welcome to the experiment!</h1>
     <h2>To begin, sign in with the Google account you registered with. </h2>
@@ -48,6 +51,11 @@
     <button id="start">I'm ready</button>
   </div>
   <div class="container" id="3">
+    <div id="holder">
+      <div id="hider">
+        <div id="check"></div>
+      </div>
+    </div>
     <h1>You're all done!</h1>
     <button id="signOut">Sign Out</button><br>
   </div>
@@ -64,14 +72,14 @@
 
   <script src="script.js"></script>
   <script>
-    function playVideo(){
-      setTimeout(()=>{
+    function playVideo() {
+      setTimeout(() => {
         $("iframe")[0].contentWindow.document.querySelector(".ytp-large-play-button").click();
-          // $(".ytp-large-play-button").click();
+        // $(".ytp-large-play-button").click();
         console.log("click");
 
-      },1000);
-}
+      }, 1000);
+    }
   </script>
   <script>
     let firebaseConfig = {
@@ -87,17 +95,30 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
+
+    if (/Mobi|Android/i.test(navigator.userAgent) || true) {
       // $("body").html('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&enablejsapi=1" frameborder="0" allow="autoplay" style="position:fixed;width:100vw;height:100vh;z-index: 10;left: 0;top: 0;border: none;"></iframe>')
       // $("body").html('<iframe onload = "playVideo()" src="https://www.youtube.com/embed/TbArDY2iWSw?autoplay=1&loop=1&playlist=TbArDY2iWSw" frameborder="0" show = false allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture " allowfullscreen></iframe>');
-      $('body').append('<div id="rolled">please use a computer to do this experiment, thanks! :)</div>')
-      $('body').append('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=02" frameborder="0" allow="autoplay; encrypted-media" style="position:fixed;width:100%;height:100%;z-index: 2000;left: 0;top: 0;border: none;"></iframe>');
+      $('body').html(
+        `
+      <video width="100%" height="100%" preload="auto" playsinline loop>
+  <source src="give.mp4" type="video/mp4">
+Your browser does not support rickrolling.
+</video>
+
+`
+      )
+      $('body').append(`<div id="rolled"><div>Please use a computer to do this experiment, thanks! :) <br>
+        <button onclick="huh()">Override</button></div>
+</div>`);
+
+      // $('body').append('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=02" frameborder="0" allow="autoplay; encrypted-media" style="position:fixed;width:100%;height:100%;z-index: 2000;left: 0;top: 0;border: none;"></iframe>');
 
 
-    }else{
+    } else {
       run();
     }
-    
+
   </script>
 
 </body>

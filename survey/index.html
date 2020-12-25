@@ -11,13 +11,14 @@
 </head>
  
 <body>
-
+  
   <template id="survey-results">
     <div class="container" id="NUM">
-      <h2 class="txt">
+      <h2 class="vertically-centered">
+        <span class="loading_anim small"></span>
         Survey complete. Analyzing your responses...
       </h2>
-
+  
     </div>
   </template>
   <template id="start">
@@ -44,8 +45,8 @@
   </template>
   <template id="form">
     <div class="container" id="NUM">
-      <div class="question">
-        <h1 class="txt" id="question">
+      <div class="question-container">
+        <h1 class="question">
           QUESTION
         </h1>
 
@@ -74,13 +75,19 @@
     <div style="margin: auto;">
       <h2 id="stat">
         [TEXT]
+
       </h2>
       <div class="info">
         <div class="content">
           <div class="content-text">
-            Now, for the actual experiment, you'll be tasked with manipulating a 2d rubix cube so that it looks like its initial configuration. (Remember this!)
+            In just a moment, you'll get access to a 2d Rubix's cube to solve.
             <br>
-            The experiment will end when you give up, solve the puzzle, or use up the allotted 20 min. 
+            - The experiment will end when you give up, solve the puzzle, or use up the allotted 20 min.
+            <br>
+            - In order to solve it, you must return the cube back to its initial configuration. (Remember what that looks like beforehand!)
+
+            <br>
+            
           </div>
           <button id="buttonN-puzzle" onclick="startPuzzle()" disabled="disabled">Loading...</button>
 
@@ -102,7 +109,7 @@
   <div id="loading">
     <span class="loading_anim"></span>
     <div style="padding:10px 0px">
-      Loading... Please wait
+      Loading more...
     </div>
   </div>
   <script src="/preq.js" defer></script>

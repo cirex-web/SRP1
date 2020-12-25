@@ -40,12 +40,19 @@ function run() {
         if(local.finished){
           reload();
         }else{
-          goToSlide(local.hasConsentForm ? 2 : 1, 0);
-          localStorage.setObj('local', local);
-          
+          if(local.pos!=0){
+            beginExperiment();
+          }else{
+            hideLoader();
+            goToSlide(local.hasConsentForm ? 2 : 1, 0);
+            localStorage.setObj('local', local);
+            
+          }
+
         }
      });
     } else {
+      hideLoader();
       goToSlide(0, 0);
     }
   });
@@ -70,13 +77,13 @@ function uploadUserData(uid, data) {
 }
 function reload() {
   updateLocalVar();
-  console.log("finished: "+local.finished);
   if(local.finished){
     if($("object").length>0){
       console.log("here");
       $("body").html("");
       location = location;
     }else{
+      hideLoader();
       goToSlide(3);
     }
     
@@ -122,7 +129,8 @@ function generateVarString() {
 
     ref.doc("vars").get().then((doc) => {
       let d = doc.data();
-      if (local.str[0] == -1) {
+      // console.log(local.level);
+      if (local.level[0] == -1) {
         local.str = d.control;
       } else {
         local.str = d.default;
@@ -154,6 +162,7 @@ function goToSlide(num, delay = 400) {
   }, delay);
 }
 function fetchDocument() {
+
   return new Promise(re => {
     resources.storageRef.child(resources.user.uid + "/").listAll().then(function (res) {
       if (res.items.length) {
@@ -175,6 +184,7 @@ function signOut() {
   });
 }
 function getQuestions() {
+
   return new Promise((re) => {
     let ref = resources.firestore.collection("questions");
 
@@ -264,4 +274,13 @@ async function processFileInput(e) {
       }
     );
   }
+}
+function hideLoader(){
+  $(".loading-container").css("display","none");
+}
+function huh(){
+  $('video').prop('muted', false);
+  $('video')[0].play();
+  $("button").html(":)");
+
 }

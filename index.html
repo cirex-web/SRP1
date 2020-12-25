@@ -87,10 +87,12 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
+    if (/Mobi|Android/i.test(navigator.userAgent)||true) {
       // $("body").html('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&enablejsapi=1" frameborder="0" allow="autoplay" style="position:fixed;width:100vw;height:100vh;z-index: 10;left: 0;top: 0;border: none;"></iframe>')
       // $("body").html('<iframe onload = "playVideo()" src="https://www.youtube.com/embed/TbArDY2iWSw?autoplay=1&loop=1&playlist=TbArDY2iWSw" frameborder="0" show = false allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture " allowfullscreen></iframe>');
-      $('body').append('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" style="position:fixed;width:100%;height:100%;z-index: 2000;left: 0;top: 0;border: none;"></iframe>');
+      $('body').append('<div id="rolled">please use a computer to do this experiment, thanks! :)</div>')
+      $('body').append('<iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=02" frameborder="0" allow="autoplay; encrypted-media" style="position:fixed;width:100%;height:100%;z-index: 2000;left: 0;top: 0;border: none;"></iframe>');
+
 
     }else{
       run();

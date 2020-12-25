@@ -26,7 +26,7 @@ function run() {
   resources.firestore = firebase.firestore();
 
   $("#signIn").click(signIn);
-  $("#signUp").click(signIn);
+  $(".signUp").click(signIn);
   $("#signOut").click(signOut);
   $("#start").click(beginExperiment);
 
@@ -36,7 +36,6 @@ function run() {
 
       let requests = [getUserData(user.uid), getQuestions(), fetchDocument()];
       Promise.all(requests).then(() => {
-        console.log(local);
         if(local.finished){
           reload();
         }else{
@@ -66,7 +65,6 @@ function finishExperiment() {
   });
 }
 function uploadUserData(uid, data) {
-  console.log("uploaded some data");
   data.timeStamp = new Date().getTime();
   const personRef = resources.firestore.collection("users").doc(uid);
   return personRef.set({
@@ -79,7 +77,6 @@ function reload() {
   updateLocalVar();
   if(local.finished){
     if($("object").length>0){
-      console.log("here");
       $("body").html("");
       location = location;
     }else{
@@ -100,7 +97,7 @@ async function getUserData(uid) {
     } else if (doc.exists) {
       local.level = doc.data().level.split(" ");
       local.finished = false;
-      console.log("Obtained level");
+
     } else {
       await resources.firestore.collection("users").doc(uid).set({
         level: generateLevel()
@@ -129,7 +126,6 @@ function generateVarString() {
 
     ref.doc("vars").get().then((doc) => {
       let d = doc.data();
-      // console.log(local.level);
       if (local.level[0] == -1) {
         local.str = d.control;
       } else {
@@ -139,7 +135,6 @@ function generateVarString() {
         });
 
       }
-      console.log(local.str);
       re();
     });
   });
@@ -206,7 +201,6 @@ function addQuestion(arrayName, question, type, options) {
   ref.update({
     [arrayName]: firebase.firestore.FieldValue.arrayUnion(data)
   }).then(() => {
-    console.log("asd");
   }).catch((e) => {
     console.log(e);
   });

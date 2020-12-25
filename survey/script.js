@@ -69,7 +69,7 @@ function initEndQuestions() {
     localStorage.clear();
     window.reload();
   }
-  console.log(localData.questions[user[consts.PUZZLE].endState]);
+  // console.log(localData.questions[user[consts.PUZZLE].endState]);
   let allQuestions = [...localData.questions[user[consts.PUZZLE].endState]];
   for (let q of localData.questions[consts.END_QUESTIONS]) {
     allQuestions.push(q);
@@ -120,7 +120,7 @@ function createEverything(data) {
 }
 function createEndSlide(pos) {
   let id = "";
-  console.log("Position: " + pos);
+  // console.log("Position: " + pos);
   if (pos == consts.START) {
     id = "survey-results";
   } else {
@@ -168,7 +168,6 @@ function updateButtonState(s = slide) {
   if ($("[name=form-choice-" + s + "]:checked").length > 0) {
     clickable = true;
   }
-  console.log(s,num,clickable);
 
   $("#buttonN-" + s).prop("disabled", !clickable);
 
@@ -299,7 +298,7 @@ function startPuzzle() {
 function updateAndRefresh() {
   updateStorage("local", localData);
   updateStorage("user", user);
-  if (localData.pos == consts.DONE) {//TODO: Change back to DONE
+  if (localData.pos == consts.DONE) {
     localData.pos = consts.START;
     updateStorage("local", localData);
     parent.finishExperiment();
@@ -328,5 +327,3 @@ function endGame(data) {
   localData.pos = consts.END;
   updateAndRefresh();
 }
-
-//TODO: Convert document.whatever to jquery cuz cool

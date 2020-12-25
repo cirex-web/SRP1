@@ -22,7 +22,7 @@ let canvas;
 let mouseInside;
 let held = false;
 let prevBox = undefined;
-let grid = [...Array(win.size)].map(x => []); //TODO figure out what this is
+let grid = [...Array(win.size)].map(x => []); 
 
 function start() {
   canvas = document.getElementById("c");
@@ -212,7 +212,6 @@ async function transformGrid(row, column, box, scramble = false) {
       if (i == win.size - 1) {
         //make start pos the start
         grid[r1][c1][1] = [start[1][0]];
-
         grid[r1][c1][0] = start[0];
       }
       // let edge = win.margin + win.padding;
@@ -221,11 +220,8 @@ async function transformGrid(row, column, box, scramble = false) {
         transition(r1, c1, co(c1, r1), 1);
         newPos = co(c + column, r + row);
       }
-      //console.log("moving " + grid[r1][c1][1][0] + " to " + newPos);
       transition(r1, c1, newPos);
-      //r1 c1 is the ahead
-      // gsap.to(grid[r1][])
-      //grid[r1][c1] = [...grid[r][c]];
+
     }
     if (!scramble && checkIfSolved()) {
       //gg you win

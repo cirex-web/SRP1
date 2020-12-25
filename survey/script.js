@@ -216,7 +216,7 @@ function transferSlides(moveAmount) {
           setTimeout(() => {
             displayStat();
           }, 500);
-        }, 1000 + Math.random() * 1000);
+        }, 4000 + Math.random() * 1000);
       } else if (localData.pos == consts.END) {
         user[consts.END] = getEnteredData();
         localData.pos = consts.DONE;
@@ -256,7 +256,7 @@ async function displayStat() {
   $("#" + (slidesBefore)).css("opacity", 1);
 
   setTimeout(() => {
-    $(".info").css("max-height", "150px");
+    $(".info").css("max-height", $(".info .content").height()+80+"px");
     $(".info").css("opacity", "1");
 
     setTimeout(() => {
@@ -264,7 +264,7 @@ async function displayStat() {
       $("#buttonN-puzzle").prop("disabled", "");
     }, 1000);
 
-  }, 1500);
+  }, 3400);
 }
 function startPuzzle() {
   if (localData.pos == consts.START) {

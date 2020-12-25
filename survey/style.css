@@ -20,9 +20,12 @@ h1 {
   /* font-weight: 100; */
   font-size: 30px;
 }
-
+h2{
+  font-weight: 100;
+    font-size: 30px;
+}
 p {
-  font-size: 20px;
+  font-size: 35px;
 }
 
 iframe {
@@ -41,7 +44,7 @@ form{
   align-content: center;
   align-items: center;
   margin-top: 30px;
-  min-width: 450px;
+  /* min-width: 450px; */
 }
 #loading {
   height: auto;
@@ -71,7 +74,6 @@ form{
 }
 
 button {
-  margin: auto;
   width: 200px;
   height: 50px;
   font-size: 30px;
@@ -79,7 +81,12 @@ button {
   color: white;
   border: none;
 }
-
+button.left{
+  margin: 0 15px 0 auto;
+}
+button.right{
+  margin: 0 auto 0 15px;
+}
 button:disabled {
   background: #e0f2ff;
   cursor: default;
@@ -204,7 +211,16 @@ button, input[type="radio"], label {
   width: 70%;
   text-align: left;
   margin: auto;
-  padding-top: 30px;
   font-size: 20px;
   max-height: 0px;
+  border: 3px solid black;
+}
+.info .content{
+  padding: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.content-text{
+  margin-bottom: 10px;
 }

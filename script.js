@@ -81,7 +81,7 @@ function reload() {
     }
     
   }else{
-    $("body").html('<object data="/survey/index.html"/>');
+    $("body").html('<object data="survey/index.html"/>');
 
   }
 }

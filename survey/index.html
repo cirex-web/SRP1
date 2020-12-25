@@ -23,18 +23,13 @@
   <template id="start">
     <div class="container" id="NUM">
       <div>
-        <h1>
-          You have succesfully joined the experiment
-        </h1>
-  
         <p>
-          If you close this page during the experiment, your progress may not be
-          saved. <br>
+
           To start, please answer the following questions.
         </p>
   
         <button onclick="move()">
-          Begin!
+          <i class="fas fa-chevron-right"></i>
         </button>
       </div>
     </div>
@@ -56,8 +51,8 @@
 
         <form id="form-NUM"></form>
         <div class="button-container">
-          <button id="buttonB-NUM" onclick="back()">Back</button>
-          <button id="buttonN-NUM" onclick="move()">Next</button>  
+          <button id="buttonB-NUM" class="left" onclick="back()"><i class="fas fa-chevron-left"></i></button>
+          <button id="buttonN-NUM"  class="right" onclick="move()"><i class="fas fa-chevron-right"></i></button>  
         </div>
      </div>
     </div>
@@ -81,18 +76,26 @@
         [TEXT]
       </h2>
       <div class="info">
-        When you're ready, click the button below to start. <br>
+        <div class="content">
+          <div class="content-text">
+            Now, for the actual experiment, you'll be tasked with manipulating a 2d rubix cube so that it looks like its initial configuration. (Remember this!)
+            <br>
+            The experiment will end when you give up, solve the puzzle, or use up the allotted 20 min. 
+          </div>
+          <button id="buttonN-puzzle" onclick="startPuzzle()" disabled="disabled">Loading...</button>
 
-        The experiment will end when you give up, solve the puzzle, or use up the allotted 20 min. 
+
+        </div>
+      <br>
+
       </div>
-      <button id="buttonN-puzzle" onclick="startPuzzle()" disabled="disabled">Loading...</button>
 
     </div>
 
   </template>
   <template id="puzzle">
     <div class="container" id="NUM">
-      <iframe class="embed" onload="showPuzzle()" src="/cube/index.html" height="100%" width="100%"></iframe>
+      <iframe class="embed" onload="showPuzzle()" src="../cube/index.html" height="100%" width="100%"></iframe>
 
     </div>
   </template>

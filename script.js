@@ -61,6 +61,7 @@ function finishExperiment() {
 
   uploadUserData(resources.user.uid, localStorage.getObj("user")).then(() => {
     localStorage.removeItem("user");
+    updateLocalVar();
     reload();
   });
 }
@@ -74,7 +75,6 @@ function uploadUserData(uid, data) {
   });
 }
 function reload() {
-  updateLocalVar();
   if(local.finished){
     if($("object").length>0){
       $("body").html("");

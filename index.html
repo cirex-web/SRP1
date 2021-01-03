@@ -35,7 +35,7 @@
       ondragleave="dragLeaveHandler(event)">
 
       <div id="progress_bar"></div>
-      <input type="file" id="submit-file" accept=".pdf,image/*" /><br>
+      <input type="file" id="submit-file" accept=".pdf,image/*" onchange="processFileInput(this)"/><br>
       <h3>OR</h3>
 
       <p>Drag and drop...</p>

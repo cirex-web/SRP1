@@ -45,11 +45,12 @@ input[type="file"]{
   /* box-shadow: 10px 10px black; */
   background: #0079d32e;
   /* padding: 20px; */
-  margin-top: 20px;
+  margin: 20px auto 0 auto;
   position: relative;
   overflow: hidden;
   transition: .5s max-height;
   max-height: 200px;
+  width: 50vw;
 }
 #progress_bar{
   position: absolute;
